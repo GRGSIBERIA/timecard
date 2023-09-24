@@ -50,6 +50,7 @@ bool my::tcp_bind(int sockfd_listen, int port, char* error) {
 		strcpy(error, strerror(save));
 		return false;
 	}
+	
 	return true;
 }
 
@@ -63,7 +64,7 @@ bool my::tcp_listen(int sockfd_listen, int backlog, char* error) {
 	return true;
 }
 
-int my::tcp_accept(int sockfd_listen, char* error, bool is_verbose = true) {
+int my::tcp_accept(int sockfd_listen, char* error, bool is_verbose) {
 	sockaddr_in client;
 	socklen_t size_client = sizeof(client);
 
