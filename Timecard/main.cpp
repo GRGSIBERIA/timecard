@@ -100,9 +100,7 @@ int main()
 	if (clientSocket == INVALID_SOCKET)
 	{
 		printf("accept failed with error: %d\n", WSAGetLastError());
-		closesocket(listenSocket);
-		WSACleanup();
-		return 1;
+		goto listen_cleanup;
 	}
 
 	// クライアント情報
@@ -131,9 +129,7 @@ int main()
 			if (ret == SOCKET_ERROR)
 			{
 				printf("send failed with error: %d\n", WSAGetLastError());
-				closesocket(clientSocket);
-				WSACleanup();
-				return 1;
+				goto client_cleanup;
 			}
 			printf("Bytes sent: %d\n", ret);
 		}
@@ -145,9 +141,7 @@ int main()
 		else
 		{
 			printf("recv failed with error: %d\n", WSAGetLastError());
-			closesocket(clientSocket);
-			WSACleanup();
-			return 1;
+			goto client_cleanup;
 		}
 	}
 
@@ -156,9 +150,7 @@ int main()
 	if (ret == SOCKET_ERROR)
 	{
 		printf("shutdown failed with error: %d\n", WSAGetLastError());
-		closesocket(clientSocket);
-		WSACleanup();
-		return 1;
+		goto client_cleanup;
 	}
 
 	// ソケット解放
@@ -168,4 +160,14 @@ int main()
 	WSACleanup();
 
 	return 0;
+
+listen_cleanup:
+	closesocket(listenSocket);
+	WSACleanup();
+	return 1;
+
+client_cleanup:
+	closesocket(clientSocket);
+	WSACleanup();
+	return 1;
 }
