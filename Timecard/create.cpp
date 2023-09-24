@@ -1,5 +1,6 @@
 #include "myws.h"
 
+/*
 int my::tcp_socket_listen_port(int port, int backlog, char* error) {
 	int sockfd = my::tcp_scoket(error);
 
@@ -82,3 +83,4 @@ int my::tcp_accept(int sockfd_listen, char* error, bool is_verbose) {
 	}
 	return fd;
 }
+*/
