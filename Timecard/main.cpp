@@ -47,7 +47,8 @@ int main() {
 		printf("accepted connection from %s, port %d\n",
 			inet_ntoa(client.sin_addr), ntohs(client.sin_port));
 
-		int n = send(sock, "HELLO", 5, 0);
+		char status[] = "HTTP/1.0 200 OK";
+		int n = send(sock, status, strlen(status), 0);
 		if (n < 1) {
 			printf("send : %d\n", WSAGetLastError());
 			goto cleanup;
