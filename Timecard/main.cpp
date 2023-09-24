@@ -1,5 +1,7 @@
 #include "myws.h"
 
+#define _WINSOCK_DEPRECATED_NO_WARNINGS
+
 int main() {
 	WSADATA wsa;
 	SOCKET sock;
@@ -21,8 +23,8 @@ int main() {
 	addr.sin_addr.S_un.S_addr = INADDR_ANY;
 
 	BOOL yes = 1;
-	int err = setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (const char*)yes, sizeof(yes));
-	if (!err) {
+	int err = setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (const char*)&yes, sizeof(yes));
+	if (err != 0) {
 		printf("setsockopt : %d\n", WSAGetLastError());
 		goto cleanup;
 	}
@@ -44,11 +46,13 @@ int main() {
 			goto cleanup;
 		}
 
+		char buf[256];
+		inet_ntop(client.sin_family, &client.sin_addr, buf, 256);
 		printf("accepted connection from %s, port %d\n",
-			inet_ntoa(client.sin_addr), ntohs(client.sin_port));
+			buf, ntohs(client.sin_port));
 
 		char status[] = "HTTP/1.0 200 OK";
-		int n = send(sock, status, strlen(status), 0);
+		int n = send(sock, status, (int)strlen(status), 0);
 		if (n < 1) {
 			printf("send : %d\n", WSAGetLastError());
 			goto cleanup;
@@ -61,6 +65,7 @@ int main() {
 	return 0;
 
 cleanup:
+	closesocket(sock);
 	WSACleanup();
 	return 1;
 }
